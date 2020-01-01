@@ -100,7 +100,14 @@ class Blog extends Component {
                         </h1>
                     </div>
                     <div>
-                        <div style={{ backgroundImage: `url(${img_url})`, margin: 'auto' }} />
+                        <div style={{ 
+                                    backgroundImage: `url(${img_url})`, 
+                                    margin: 'auto',
+                                    height: '300px',
+                                    backgroundSize: 'cover',
+                                    backgroundRepeat: 'no-repeat',
+                                    backgroundPosition: 'center',
+                                    width: '500px' }} />
                     </div>
                     <div style={{textAlign: 'center'}}>
                         <p>
