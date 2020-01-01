@@ -18,7 +18,6 @@ class Editblog extends Component {
     
     componentDidMount = async () => {
         const { blogId } = this.props;
-        console.log(blogId)
         try {
             const res = await getBlog(blogId);
             if (res.data.success) {
