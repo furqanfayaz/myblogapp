@@ -22,7 +22,7 @@ class Login extends Component {
                 Router.push("/bloglist");
             } 
             const token = res.data.token;
-            cookie.set('token', token, {expires: 1});
+            cookie.set('token', token);
 
         } catch (err) {
             console.log(err);

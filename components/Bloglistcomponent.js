@@ -1,6 +1,10 @@
 import { Component } from "react";
 import Link from 'next/link';
 import { getList } from "../apis/BlogApis";
+import { logout } from "../apis/Authapis";
+import "../styles/styles.css";
+import Cookie from "js-cookie";
+import Router from "next/router";
 
 class List extends Component {
     constructor() {
@@ -16,6 +20,19 @@ class List extends Component {
             this.setState({ list: res.data.posts });
         }
     }
+    handleLogout = async () => {
+        const cookie = Cookie.get('token');
+        const body = { cookie }
+        const res  = await logout(body);
+        try {
+            if (res.data.success) {
+                Cookie.remove('token');
+                Router.push('/');
+            }
+        } catch (err) {
+            console.log(err);
+        }
+    }
 
     render () {
         const { list } = this.state;
@@ -24,8 +41,14 @@ class List extends Component {
                 <div style={{display: 'flex'}}>
                     <h1 style={{textAlign: 'center', flex: 2}}>Blogs</h1>
                     <Link href="/createblog">
-                        <a style={{flex: 0.2}}>Add New Blog</a>
+                        <a style={{flex: 0.3, margin: 'auto'}}><h3>Add New Blog</h3></a>
                     </Link>
+                    <button 
+                        onClick={this.handleLogout}
+                        className="btn"
+                    >
+                        Logout
+                    </button>
                 </div>
                 
                 <ol>
@@ -33,7 +56,7 @@ class List extends Component {
                     return (
                             <li>
                                 <Link as={`/blog/${item.id}`} href={`/blog?id=${item.id}`}>
-                                    <a>{item.title}</a>
+                                    <a><h3>{item.title}</h3></a>
                                 </Link>
                             </li>
                     )

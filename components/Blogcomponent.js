@@ -1,8 +1,10 @@
 import { Component } from "react";
-import { getblog } from "../apis/BlogApis";
+import { getBlog } from "../apis/BlogApis";
+import { deleteBlog } from "../apis/BlogApis";
 import { deleteComment } from "../apis/BlogApis"
 import "../styles/styles.css";
 import Link from "next/link";
+import Router from "next/router";
 
 class Blog extends Component {
     constructor(props) {
@@ -19,7 +21,7 @@ class Blog extends Component {
     componentDidMount = async () => {
         const { blogId } = this.props;
         try {
-            const res = await getblog(blogId);
+            const res = await getBlog(blogId);
             if (res.data.success) {
                 this.setState({
                     id: res.data.posts[0].id,
@@ -35,12 +37,30 @@ class Blog extends Component {
         }
     }
 
-    handleDelete = async (id) => {
-        console.log(id)
+    handleUpdateBlog = async (id) => {
+        Router.push(`/updateblog?id=${id}`, `/updateblog/${id}`);
+    }
+
+    handleDeleteBlog = async (id) => {
+        const res = await deleteBlog(id);
+        try {
+            if (res.data.success) {
+                Router.push("/bloglist");
+            }
+        } catch (err) {
+            console.log(err);
+        }
+    }
+
+    handleDeleteComment = async (id) => {
         const res = await deleteComment(id);
         try {
             if (res.data.success) {
-                Router.push("/blog");
+                this.setState({
+                    comments: this.state.comments.filter((comment) => {
+                        return comment.id !== id;
+                    })
+                })
             }
         }  catch (err) {
             console.log(err);
@@ -48,10 +68,32 @@ class Blog extends Component {
     }
 
     render () {
-        const { title, img_url, content, comments } = this.state;
+        const { id, title, img_url, content, comments } = this.state;
 
         return (
-                <div style={{display: 'flex', flexDirection: 'column'}}>
+                <div style={{display: 'flex', flexDirection: 'column', padding: '16px 16px'}}>
+                    <div style={{display: 'flex', justifyContent: 'space-between'}}>
+                        <div>
+                            <Link href="/bloglist">
+                                <a><h3> Back to blog list</h3></a>
+                            </Link>
+                        </div>
+                        <div>
+                            <button
+                                onClick={() => {this.handleUpdateBlog(id)}}
+                                className="btn"
+                            >
+                                Update Blog
+                            </button>
+                            <button
+                                onClick={() => {this.handleDeleteBlog(id)}}
+                                className="btn"
+                            >
+                                Delete Blog
+                            </button>  
+                        </div>
+                        
+                    </div>
                     <div style={{textAlign: 'center'}}>
                         <h1>
                             {title}
@@ -80,10 +122,10 @@ class Blog extends Component {
                                         <div style={{display: 'flex'}}>
                                             <p style={{flex: 2}}>{item.content}</p>
                                             <button 
-                                                onClick={this.handleDelete(item.id)}
+                                                onClick={() => {this.handleDeleteComment(item.id)}}
                                                 className="btn"
                                             >
-                                                Remove Comment
+                                                Remove
                                             </button>
                                         </div>
                                         

@@ -1,16 +1,37 @@
 import { Component, createRef } from "react";
-import { createPost } from "../apis/BlogApis";
+import { updateBlog } from "../apis/BlogApis";
+import { getBlog } from "../apis/BlogApis";
 import "../styles/styles.css";
 import Router from "next/router";
 
-class BlogForm extends Component {
-    constructor() {
-        super();
+class Editblog extends Component {
+    constructor(props) {
+        super(props);
         this.inputRef = createRef();
         this.state = {
             title: '',
             content: '',
             file: '',
+            img_url: '',
+        }
+    }
+    
+    componentDidMount = async () => {
+        const { blogId } = this.props;
+        console.log(blogId)
+        try {
+            const res = await getBlog(blogId);
+            if (res.data.success) {
+                this.setState({
+                    id: res.data.posts[0].id,
+                    title: res.data.posts[0].title,
+                    content: res.data.posts[0].content, 
+                    img_url: res.data.posts[0].media,
+                    });
+            }
+
+        } catch (err) {
+            console.log(err);
         }
     }
     handleClick = () => {
@@ -24,13 +45,13 @@ class BlogForm extends Component {
         const files = e.target.files;
         this.setState({file: files[0]});
     }
-    handlecreateClick = async () => {
+    handleupdateClick = async () => {
         const formData = new FormData();
-        const { title, content, file } = this.state;
+        const { id, title, content, file } = this.state;
         formData.append('title', title);
         formData.append('content', content);
         formData.append('file', file);
-        const res = await createPost(formData)
+        const res = await updateBlog(id, formData)
         try {
             if (res.data.success) {
                 Router.push(`/blog?id=${res.data.post.id}`, `/blog/${res.data.post.id}`)
@@ -41,9 +62,10 @@ class BlogForm extends Component {
     }
 
     render () {
+        const { title, content, img_url } = this.state;
         return (
             <div style={{display: 'flex', flexDirection: 'column'}}>
-                <div style={{display: 'flex', flexDirection: 'column'}}>
+                <div style={{display: 'flex', flexDirection: 'column', justifyContent: 'space-between'}}>
                     <div style={{margin: 'auto'}}>
                         <label for="title">Title:</label> 
                         <input 
@@ -69,19 +91,22 @@ class BlogForm extends Component {
                                 type="file" 
                                 style={{display: 'none'}} 
                         />
-                        <button
-                            onClick={this.handleClick}
-                        >
-                            Upload Image
-                        </button> 
+                        <div>
+                            <div style={{ backgroundImage: `url(${img_url})`, margin: 'auto' }} />
+                            <button
+                                onClick={this.handleClick}
+                            >
+                                Change Image
+                            </button>
+                        </div>
                     </div>         
                 </div>
                 <div style={{textAlign: 'center'}}>
                     <button 
-                        onClick={this.handlecreateClick}
+                        onClick={this.handleupdateClick}
                         className="btn"
                     >
-                        Submit
+                        Update
                     </button>
                 </div>
             </div>
@@ -90,4 +115,4 @@ class BlogForm extends Component {
     }
 
 };
-export default BlogForm;
+export default Editblog;

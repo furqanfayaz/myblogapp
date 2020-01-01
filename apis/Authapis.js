@@ -8,3 +8,7 @@ export const login = (body) => {
 export const signup = (body) => {
     return axios.post(`${base}/signup`, body);
 }
+
+export const logout = (body) => {
+    return axios.post(`${base}/logout`, body);
+}

@@ -21,7 +21,7 @@ class Comment extends Component {
         const res = await addComment(body)
         try {
             if (res.data.success) {
-                Router.push('/blog')
+                Router.push(`/blog?id=${post_id}`, `/blog/${post_id}`);
             }
         } catch (err) {
             console.log(err);
@@ -33,7 +33,7 @@ class Comment extends Component {
         return (
             <div>
                 <div style={{display: 'flex'}}>
-                    <label for="comment">Add Comment:</label> 
+                    <label for="comment">Comment</label> 
                     <input 
                         onChange={(e) => {this.setState({content: e.target.value})}} 
                         value={this.state.content} 
@@ -47,7 +47,6 @@ class Comment extends Component {
                     </button>
                 </div>
             </div>
-           
         )
     }
 
