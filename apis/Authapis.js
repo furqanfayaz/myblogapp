@@ -1,5 +1,5 @@
 import axios from 'axios';
-const base = 'https://git.heroku.com/glacial-fortress-74052.git/api';
+const base = 'https://glacial-fortress-74052.herokuapp.com/api';
 
 export const login = (body) => {
     return axios.post(`${base}/login`, body);
