@@ -1,6 +1,6 @@
 import axios from 'axios';
 import cookie from "js-cookie";
-const base = 'https://glacial-fortress-74052.herokuapp.com/api/api';
+const base = 'https://glacial-fortress-74052.herokuapp.com/api';
 
 export const getList = () => {
     const token  = cookie.get('token');
